@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="main-1.css" />
+  <title>Poleon</title>
+
+
+  <style>
+    @font-face { font-family: HelveticaNeue; src: url('fonts/HelveticaNeue.ttc'); } 
+    @font-face { font-family: HelveticaNeueBold; font-weight: bold; src: url('fonts/HelveticaNeue.ttc'); }
+
+* {
+  box-sizing: border-box;
+}
+/* body */
+body {
+  background: linear-gradient(180deg, #FCFCFC 0%, #EEEEEE 100%);
+}
+/* container */
+
+.container {
+  height: 100vh;
+  margin: 0 auto;
+}
+/* logo */
+
+.logo_pic {
+  padding-top: 40px;
+  margin-left: -23px;
+}
+a , p {
+  font-family: HelveticaNeue !important;
+}
+
+/* p text */
+p {
+  font-style: normal;
+  font-weight: 800 !important;
+  font-size: 22.6316px;
+  line-height: 22px;
+  letter-spacing: -0.04em;
+}
+
+.first-3 {
+  margin-left: 23px;
+  padding-left: 10px;
+}
+
+/* links */
+a {
+  background-color: #f16f49;
+  font-family: "Helvetica Neue";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 108.1%;
+  /* or 17px */
+  letter-spacing: -0.04em;
+  color: #ffffff;
+  width: 170px;
+  height: 37px;
+}
+
+a:link {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 25px;
+  border-radius: 13.5606px;
+  text-transform: capitalize;
+}
+
+a:visited {
+  color: #ffffff;
+}
+
+/* flexox for pics */
+.pics-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 35px 5px;
+  margin-top: 40px;
+}
+
+/* flexbox for cards */
+
+.card-1-parent {
+  background-color: #d9d9d9;
+  width: 136px;
+  height: 136px;
+  border-radius: 27.2px;
+  width: 136px;
+  height: 136px;
+  position: relative;
+}
+
+.card-1-text {
+  display: flex;
+  justify-content: center;
+  background-color: #bbbbbb;
+  color: aliceblue;
+  border-top-left-radius: 27.2px;
+  border-top-right-radius: 27.2px;
+  width: 136px;
+  height: 24px;
+  padding-top: 2px;
+}
+
+.card-1 {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  position: relative;
+  padding-top: 17px;
+}
+
+/*  */
+
+.card-2-parent {
+  background-color: #d9d9d9;
+  width: 136px;
+  height: 136px;
+  border-radius: 27.2px;
+  width: 136px;
+  height: 136px;
+  position: relative;
+}
+
+.card-2 {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto;
+  position: relative;
+  padding-top: 17px;
+  padding-left: 3px;
+}
+
+.object-fit {
+  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.img-fit {
+  width: 136px;
+  height: 136px;
+}
+
+.d-none {
+  display: none;
+}
+  </style>
+</head>
+
+<body>
+
+  
+  <div class="container">
+
+    <div class="first-3">
+      <div class="logo_pic">
+        <img src="images/Vector.png" alt="logo" />
+      </div>
+      <p>Presiona en el contenido que desees descargar</p>
+      <a onclick="downloadAll()" href="javascript:void(0)" id="download_btn" class="download_logo d-none">Descargar todos
+        <img src="images/download.png" alt="download-logo" />
+      </a>
+    </div>
+    <br />
+
+    <div id="content_container" class="pics-div">
+
+
+    </div>
+
+
+  </div>
+
+
+  <script>
+
+    var links;
+    window.onload = async function () {
+      console.log(">>>>>>>>>>>>> ");
+      const url = (window.location.href);
+      const urlArr = url.split("&");
+      const arr = []
+      urlArr.forEach((e , i) => {
+          if( i == 0 ) { let a = e.split("?"); let aa = a[1].split("img="); arr.push(aa[1]) } else { let aa= e.split("img=");  arr.push(aa[1]); }
+      });
+    console.log(arr);
+      /* js url params */
+
+      let a =arr;
+      /* ----------------- */
+      if (!Array.isArray(a)) {
+        a = a.split(",");
+      }
+      links = a;
+      var isAndroid = /(android)/i.test(navigator.userAgent);
+      if (isAndroid) {
+        // show download all button
+        const el = document.getElementById('download_btn');
+        el.classList.remove('d-none')
+      }
+      renderImages(links)
+    };
+
+
+    const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+    async function download(images) {
+      count = 1;
+      for (const file of images) {
+        var extension = file.split('.').pop();
+
+        console.log(' >>>>>> before ');
+        await sleep(1000);
+
+
+        const image = await fetch(file);
+        const imageBlog = await image.blob();
+        const imageURL = URL.createObjectURL(imageBlog);
+
+        const link = document.createElement("a");
+        link.href = imageURL;
+        link.download = `image_${count}.${extension}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        count++;
+   
+      }
+    }
+
+    async function downloadAll() {
+      await download(links)
+    }
+
+    async function downloadSingle(link) {
+      console.log(link);
+      await download([link])
+    }
+
+
+
+    function renderImages(links) {
+      let html = ''
+
+      var contentContainerEl = document.getElementById('content_container');
+
+      links.forEach((image,i) => {
+
+        if (image) {
+          
+
+        var extension = image.split('.').pop();
+        console.log(extension ,extension.match(/.(jpg|jpeg|png|gif)$/i));
+        if ((/(jpg|jpeg|png|gif)$/i).test(extension)) {
+          // is image
+
+          html = `
+          <div  class="img-fit img_link_container-${i}">
+            <img id="file_number_${i}" src="${image}" alt="pic-no-1" class="object-fit" file-url="${image}" />
+          </div>
+          `
+          
+        }  else if ((/(mp4|3gp|ogg)$/i).test(extension)) {
+        
+          html = ` <div  class="card-1-parent img-fit img_link_container">
+          <div class="card-1-text">Video</div>
+          <div class="card-1">
+            <img id="file_number_${i}" src="images/play.png" file-url="${image}" alt="file-pic" />
+          </div>
+        </div>
+        `
+
+          
+        } else  {
+          html = ` <div  class="card-1-parent img-fit img_link_container">
+          <div class="card-1-text">File</div>
+          <div class="card-1">
+            <img id="file_number_${i}" src="images/file-text.png" file-url="${image}" alt="file-pic" />
+          </div>
+        </div>`
+        }
+
+        contentContainerEl.insertAdjacentHTML('beforeend' , html)
+
+        document.getElementById(`file_number_${i}`).addEventListener("click", function(e) {
+        const link = e.target.getAttribute('file-url');
+        downloadSingle(link)
+      });
+
+    }
+        
+      });
+
+    }
+
+  
+  </script>
+
+
+</body>
+
+
+</html>
